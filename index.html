@@ -3,11 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- =========================
+         Primary SEO
+    ========================== -->
     <title>CoolCliQ | Strategy x Creativity x Performance</title>
+    <meta
+      name="description"
+      content="CoolCliQ is a full-scale digital partner built on Strategy, Creativity & Performance. We help businesses grow with branding, websites, apps, and high-ROI marketing."
+    />
+    <meta
+      name="keywords"
+      content="CoolCliQ, digital marketing Aligarh, website design Aligarh, app development Aligarh, performance marketing, Meta ads, Google ads, ecommerce marketing, branding, UI UX, creative agency"
+    />
+    <meta name="author" content="CoolCliQ Pvt Ltd" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- =========================
+         Canonical
+         (Change if your primary domain differs)
+    ========================== -->
+    <link rel="canonical" href="https://coolcliq.in/" />
+
+    <!-- =========================
+         Favicons
+    ========================== -->
+    <link rel="icon" href="/coolcliq_favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <!-- Optional but nice -->
+    <!-- <link rel="manifest" href="/site.webmanifest" /> -->
+    <meta name="theme-color" content="#111111" />
+
+    <!-- =========================
+         Open Graph
+    ========================== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CoolCliQ" />
+    <meta property="og:title" content="CoolCliQ | Strategy x Creativity x Performance" />
+    <meta
+      property="og:description"
+      content="A full-scale digital partner built on Strategy, Creativity & Performance. We help businesses turn great ideas into measurable results."
+    />
+    <meta property="og:url" content="https://coolcliq.in/" />
+    <!-- Add a real social preview image in /public -->
+    <meta property="og:image" content="https://coolcliq.in/og-image.jpg" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- =========================
+         Twitter Card
+    ========================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CoolCliQ | Strategy x Creativity x Performance" />
+    <meta
+      name="twitter:description"
+      content="Branding, websites, apps, and performance marketing for measurable growth."
+    />
+    <meta name="twitter:image" content="https://coolcliq.in/og-image.jpg" />
+
+    <!-- =========================
+         Fonts + Tailwind
+    ========================== -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- =========================
+         Tailwind config
+    ========================== -->
     <script>
       tailwind.config = {
         theme: {
@@ -17,14 +85,14 @@
             },
             colors: {
               brand: {
-                yellow: '#FFC107', // Bright Yellow/Orange from screenshots
+                yellow: '#FFC107',
                 black: '#111111',
-                gray: '#F5F5F7', // Apple/Flighty style light gray
+                gray: '#F5F5F7',
                 dark: '#0A0A0A',
-              }
+              },
             },
             animation: {
-              'blob': 'blob 7s infinite',
+              blob: 'blob 7s infinite',
             },
             keyframes: {
               blob: {
@@ -32,26 +100,29 @@
                 '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
                 '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
                 '100%': { transform: 'translate(0px, 0px) scale(1)' },
-              }
-            }
-          }
+              },
+            },
+          },
         },
         plugins: [
-          function({ matchUtilities, theme }) {
+          function ({ matchUtilities, theme }) {
             matchUtilities(
               {
                 'animation-delay': (value) => ({
                   'animation-delay': value,
                 }),
               },
-              { values: theme('transitionDelay') }
-            )
+              { values: theme('transitionDelay') },
+            );
           },
         ],
-      }
+      };
     </script>
+
+    <!-- =========================
+         Custom scrollbar
+    ========================== -->
     <style>
-      /* Custom scrollbar for that premium feel */
       ::-webkit-scrollbar {
         width: 10px;
       }
@@ -63,23 +134,51 @@
         border-radius: 5px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #FFC107;
+        background: #ffc107;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.1/",
-    "react": "https://aistudiocdn.com/react@^19.2.1"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
-  <body class="bg-brand-black text-white antialiased selection:bg-brand-yellow selection:text-black">
+
+    <!-- =========================
+         JSON-LD (WebSite)
+         (Change domain if needed)
+    ========================== -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "CoolCliQ",
+        "url": "https://coolcliq.in/",
+        "publisher": {
+          "@type": "Organization",
+          "name": "CoolCliQ Pvt Ltd"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://coolcliq.in/?s={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <!-- Importmap -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+          "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+          "react/": "https://aistudiocdn.com/react@^19.2.1/",
+          "react": "https://aistudiocdn.com/react@^19.2.1"
+        }
+      }
+    </script>
+
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+
+  <body
+    class="bg-brand-black text-white antialiased selection:bg-brand-yellow selection:text-black"
+  >
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+    <script type="module" src="/index.tsx"></script>
+  </body>
 </html>
