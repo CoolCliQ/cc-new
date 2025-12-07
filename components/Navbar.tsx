@@ -16,9 +16,50 @@ export const Navbar: React.FC<NavbarProps> = ({ scrolled, onNavigate }) => {
     { name: 'Industries', href: '#industries' },
   ];
 
-  const handleLogoClick = (e: React.MouseEvent) => {
+  const scrollToHash = (hash: string) => {
+    if (typeof window === 'undefined') return;
+
+    const el = document.querySelector(hash) as HTMLElement | null;
+    if (!el) {
+      // fallback: set hash so browser can try default behavior
+      window.location.hash = hash;
+      return;
+    }
+
+    // Adjust this offset to match your navbar height in both states
+    const headerOffset = scrolled ? 88 : 110;
+
+    const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+    window.scrollTo({
+      top,
+      behavior: 'smooth',
+    });
+  };
+
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
-    onNavigate('/');
+    setIsOpen(false);
+
+    // If it's a hash link and you're not on the home page,
+    // navigate with hash so the new page can land there.
+    if (typeof window !== 'undefined') {
+      const isHash = href.startsWith('#');
+      const onHome = window.location.pathname === '/' || window.location.pathname === '';
+
+      if (isHash && !onHome) {
+        onNavigate(`/${href}`); // "/#about"
+        return;
+      }
+
+      if (isHash) {
+        scrollToHash(href);
+        return;
+      }
+    }
+
+    // Non-hash navigation fallback
+    onNavigate(href);
   };
 
   return (
@@ -26,7 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrolled, onNavigate }) => {
       <nav
         className={`
           pointer-events-auto
-          transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1)
+          transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
           flex items-center justify-between
           relative
           ${
@@ -37,24 +78,32 @@ export const Navbar: React.FC<NavbarProps> = ({ scrolled, onNavigate }) => {
         `}
       >
         {/* Custom Stacked Logo */}
-        <a 
-            href="#/"
-            className="flex flex-col items-center leading-none group cursor-pointer select-none transition-transform duration-300 hover:scale-105" 
-            onClick={handleLogoClick}
+        <a
+          href="/"
+          className="flex flex-col items-center leading-none group cursor-pointer select-none transition-transform duration-300 hover:scale-105"
+          // onClick={handleLogoClick}
         >
-            {/* Row 1: C [Toggle] L */}
-            <div className={`flex items-center gap-[2px] transition-all duration-300 ${scrolled ? 'scale-90' : 'scale-100'}`}>
-                <span className="text-3xl font-black tracking-tighter text-white">C</span>
-                {/* Toggle Switch */}
-                <div className="mx-0.5 w-11 h-6 bg-black border-2 border-white rounded-full flex items-center relative">
-                     <div className="absolute right-1 w-3.5 h-3.5 bg-brand-yellow rounded-full"></div>
-                </div>
-                <span className="text-3xl font-black tracking-tighter text-white">L</span>
+          {/* Row 1: C [Toggle] L */}
+          <div
+            className={`flex items-center gap-[2px] transition-all duration-300 ${
+              scrolled ? 'scale-90' : 'scale-100'
+            }`}
+          >
+            <span className="text-3xl font-black tracking-tighter text-white">C</span>
+            {/* Toggle Switch */}
+            <div className="mx-0.5 w-11 h-6 bg-black border-2 border-white rounded-full flex items-center relative">
+              <div className="absolute right-1 w-3.5 h-3.5 bg-brand-yellow rounded-full"></div>
             </div>
-            {/* Row 2: cliQ */}
-            <span className={`text-2xl font-black tracking-tight text-white -mt-1.5 ml-0.5 transition-all duration-300 ${scrolled ? 'scale-90 origin-top' : 'scale-100 origin-top'}`}>
-                cliQ
-            </span>
+            <span className="text-3xl font-black tracking-tighter text-white">L</span>
+          </div>
+          {/* Row 2: cliQ */}
+          <span
+            className={`text-2xl font-black tracking-tight text-white -mt-1.5 ml-0.5 transition-all duration-300 ${
+              scrolled ? 'scale-90 origin-top' : 'scale-100 origin-top'
+            }`}
+          >
+            cliQ
+          </span>
         </a>
 
         {/* Desktop Nav */}
@@ -63,6 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrolled, onNavigate }) => {
             <a
               key={link.name}
               href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
               className="text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300 px-5 py-2.5 rounded-full hover:bg-white/10 hover:backdrop-blur-md hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] active:scale-95 active:bg-white/5"
             >
               {link.name}
@@ -70,9 +120,10 @@ export const Navbar: React.FC<NavbarProps> = ({ scrolled, onNavigate }) => {
           ))}
           <a
             href="#contact"
+            onClick={(e) => handleNavClick(e, '#contact')}
             className={`
-                text-black px-6 py-2.5 rounded-full font-bold text-sm hover:scale-105 transition-all duration-200 ml-2
-                ${scrolled ? 'bg-brand-yellow' : 'bg-white hover:bg-brand-yellow'}
+              text-black px-6 py-2.5 rounded-full font-bold text-sm hover:scale-105 transition-all duration-200 ml-2
+              ${scrolled ? 'bg-brand-yellow' : 'bg-white hover:bg-brand-yellow'}
             `}
           >
             Get Custom Quote
@@ -83,27 +134,33 @@ export const Navbar: React.FC<NavbarProps> = ({ scrolled, onNavigate }) => {
         <button
           className="md:hidden text-white p-2 rounded-full hover:bg-white/10 transition-colors"
           onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
+          aria-controls="mobile-nav"
+          aria-label="Toggle navigation"
         >
           {isOpen ? <X /> : <Menu />}
         </button>
 
         {/* Mobile Menu - Drops down from the floating bar */}
         {isOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 mt-4 bg-zinc-900/95 backdrop-blur-xl border border-white/10 p-6 flex flex-col gap-4 animate-in slide-in-from-top-5 rounded-3xl shadow-2xl">
+          <div
+            id="mobile-nav"
+            className="md:hidden absolute top-full left-0 right-0 mt-4 bg-zinc-900/95 backdrop-blur-xl border border-white/10 p-6 flex flex-col gap-4 animate-in slide-in-from-top-5 rounded-3xl shadow-2xl"
+          >
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className="text-lg font-medium text-zinc-300 py-3 border-b border-white/5 last:border-0"
-                onClick={() => setIsOpen(false)}
               >
                 {link.name}
               </a>
             ))}
             <a
               href="#contact"
+              onClick={(e) => handleNavClick(e, '#contact')}
               className="bg-brand-yellow text-black px-5 py-4 rounded-xl font-bold text-center mt-2"
-              onClick={() => setIsOpen(false)}
             >
               Get Custom Quote
             </a>
