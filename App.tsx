@@ -10,78 +10,116 @@ import { Footer } from './components/Footer';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { Aligarh } from './pages/Aligarh';
 import { Legal } from './pages/Legal';
+import { MVP } from './pages/MVP'; // make sure these exist
+import { WordPress } from './pages/Website'; // or remove if not needed
+
+function getCurrentPath() {
+  if (typeof window === 'undefined') return '/';
+  const path = window.location.pathname || '/';
+  return path === '' ? '/' : path;
+}
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
-  
-  // Robust Hash based routing
-  const getHashPath = () => {
-    const hash = window.location.hash;
-    // Normalize hash: remove #, ensure leading /
-    const cleanHash = hash.replace(/^#/, '');
-    const normalized = cleanHash.startsWith('/') ? cleanHash : '/' + cleanHash;
-    // Default to / if empty
-    return normalized === '/' || normalized === '' ? '/' : normalized;
-  };
-  
-  const [currentPath, setCurrentPath] = useState(getHashPath());
+  const [currentPath, setCurrentPath] = useState<string>(getCurrentPath());
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    
-    const handleHashChange = () => {
-      const path = getHashPath();
+
+    const handlePopState = () => {
+      // When user clicks Back/Forward
+      const path = getCurrentPath();
       setCurrentPath(path);
-      window.scrollTo(0, 0);
+
+      // If there is no section hash, scroll to top
+      if (!window.location.hash) {
+        window.scrollTo(0, 0);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('hashchange', handleHashChange);
-    
-    // Initial check
-    handleHashChange();
-    
+    window.addEventListener('popstate', handlePopState);
+
+    // Initial state sync (in case path changed before mount)
+    handlePopState();
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
   const navigate = (path: string) => {
-    // Ensure path format
-    const targetHash = path.startsWith('/') ? path : '/' + path;
-    window.location.hash = targetHash;
-    setCurrentPath(targetHash);
-    window.scrollTo(0, 0);
+    if (typeof window === 'undefined') return;
+
+    // Ensure we have a leading /
+    const target = path.startsWith('/') ? path : '/' + path;
+
+    // Update URL without reloading page
+    window.history.pushState({}, '', target);
+
+    // After pushState, pathname + hash are updated
+    const pathname = window.location.pathname || '/';
+    const hash = window.location.hash;
+
+    setCurrentPath(pathname);
+
+    // Only scroll to top for full pages, not section hashes
+    if (!hash) {
+      window.scrollTo(0, 0);
+    }
   };
 
-  // Routing Logic
-  const isAligarh = currentPath.toLowerCase().includes('/aligarh');
-  const isLegal = currentPath.toLowerCase().includes('/legal');
+  // ROUTING using pathname only
+  const normalizedPath = (currentPath || '').toLowerCase();
+
+  const isHome = normalizedPath === '/';
+  const isAligarh = normalizedPath === '/aligarh';
+  const isLegal = normalizedPath === '/legal';
+  const isMvp = normalizedPath === '/mvp';
+  const isWordpress = normalizedPath === '/wordpress';
+
+  let page: React.ReactNode;
+
+  if (isAligarh) {
+    page = <Aligarh />;
+  } else if (isLegal) {
+    page = <Legal />;
+  } else if (isMvp) {
+    page = <MVP />;
+  } else if (isWordpress) {
+    page = <WordPress />;
+  } else if (isHome) {
+    page = (
+      <>
+        <Hero />
+        <About />
+        <Services />
+        <Results />
+        <Industries />
+        <CallToAction />
+      </>
+    );
+  } else {
+    // Fallback: unknown route → Home
+    page = (
+      <>
+        <Hero />
+        <About />
+        <Services />
+        <Results />
+        <Industries />
+        <CallToAction />
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-brand-black text-slate-200 overflow-x-hidden">
       <Navbar scrolled={scrolled} onNavigate={navigate} />
-      
-      <main>
-        {isAligarh ? (
-            <Aligarh />
-        ) : isLegal ? (
-            <Legal />
-        ) : (
-            <>
-                <Hero />
-                <About />
-                <Services />
-                <Results />
-                <Industries />
-                <CallToAction />
-            </>
-        )}
-      </main>
-
+      <main>{page}</main>
       <Footer onNavigate={navigate} currentPath={currentPath} />
       <FloatingWhatsApp />
     </div>
